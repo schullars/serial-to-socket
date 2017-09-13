@@ -1,0 +1,213 @@
+﻿<Window x:Class="SerialToTCP.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SerialToTCP"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="MainWindow" Height="550" Width="800"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" Background="DodgerBlue" BorderThickness="5" BorderBrush="DodgerBlue"
+        >
+    
+    <Window.Resources>
+        <local:ComboboxConvert x:Key="comboboxconvert"/>
+        <local:EnableControlConvert x:Key="enableControlConvert"/>
+        
+        <ObjectDataProvider x:Key="protocolEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:Protocol"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    
+    <Grid x:Name="maingrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="235"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="235"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10"/>
+
+        </Grid.RowDefinitions>
+        
+        <Border Grid.Row="1" Grid.ColumnSpan="10" Grid.RowSpan="10" Background="White"/>
+
+        <Label Grid.Column="0" Grid.ColumnSpan="10" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
+               x:Name="softwareTitle" Content="迅效自动化Serial-TCP转换器" Foreground="White" FontSize="18" MouseDoubleClick="softwareTitle_MouseDoubleClick"/>
+
+        <Button Grid.ColumnSpan="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,50,0" Width="25" Height="20" Style="{StaticResource myFontSize}"
+                x:Name="minmum">
+            <Button.Background>
+                <ImageBrush ImageSource="skin/min.png"/>
+            </Button.Background>
+        </Button>
+        <Button Grid.ColumnSpan="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,25,0" Width="25" Height="20" Style="{StaticResource myFontSize}"
+                x:Name="maxmum">
+            <Button.Background>
+                <ImageBrush ImageSource="skin/mxn.png"/>
+            </Button.Background>
+        </Button>
+        <Button Grid.ColumnSpan="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="20" Height="20" Style="{StaticResource myFontSize}"
+                x:Name="close">
+            <Button.Background>
+                <ImageBrush ImageSource="skin/xm.png"/>
+            </Button.Background>
+        </Button>
+
+
+        
+        <GroupBox Header="串口参数" Grid.Column="1" Grid.Row="2"  BorderBrush="DodgerBlue" BorderThickness="2">
+            <Grid Margin="0,10,0,10">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                
+                <Label Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="串口号"/>
+
+                <Label Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="波特率"/>
+                <Label Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="校验位"/>
+                <Label Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="数据位"/>
+                <Label Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="停止位"/>
+                
+                
+                <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="comNum_combo" MinHeight="25" MinWidth="100"
+                          SelectedItem="{Binding comNum}" IsEnabled="{Binding ElementName=openCom,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          >
+                    <!--
+                    <ComboBox.SelectedItem>
+                        <MultiBinding Converter="{StaticResource comboboxconvert}">
+                            <Binding Path="comNum" Mode="TwoWay"/>
+                            <Binding Path="SelectedItem" ElementName="comNum_combo"/>
+                        </MultiBinding>
+                    </ComboBox.SelectedItem>-->
+                </ComboBox>
+                <ComboBox Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="baud_combo" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openCom,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          SelectedItem="{Binding baud}"/>
+                <ComboBox Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="checkbit_combo" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openCom,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          SelectedItem="{Binding parity}"/>
+                <ComboBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="databit_combo" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openCom,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          SelectedItem="{Binding databits}"/>
+                <ComboBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="stopbit_combo" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openCom,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          SelectedItem="{Binding stopbits}"/>
+
+                <Grid Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="openCom" Content="{Binding serialbtntext}" Background="{Binding serialbgcolor}" Foreground="White"/>
+                    <Button Grid.Column="2" x:Name="clearComDisp" Content="清除显示" Background="DodgerBlue" Foreground="White"/>
+                </Grid>
+                
+            </Grid>
+        </GroupBox>
+
+
+        <GroupBox Header="网络参数" Grid.Column="1" Grid.Row="5" BorderBrush="DodgerBlue" BorderThickness="2">
+            <Grid Margin="0,10,0,10">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="协议类型"/>
+
+                <Label Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="本地IP"/>
+                <Label Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="本地端口"/>
+                <Label Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="目标IP"/>
+                <Label Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                       Content="目标端口"/>
+
+
+                <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="protocol_combo" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openSocket,Path=Background,Converter={StaticResource enableControlConvert}}"
+                          SelectedItem="{Binding protocol}" ItemsSource="{Binding Source={StaticResource protocolEnum}}"/>
+                <TextBox Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="localip_text" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openSocket,Path=Background,Converter={StaticResource enableControlConvert}}"
+                         Text="{Binding localIp}"/>
+                <TextBox Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="localPort_text" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openSocket,Path=Background,Converter={StaticResource enableControlConvert}}"
+                         Text="{Binding localPort}"/>
+                <TextBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="targetip_text" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openSocket,Path=Background,Converter={StaticResource enableControlConvert}}"
+                         Text="{Binding targetIp}"/>
+                <TextBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                          x:Name="tartetPort_text" MinHeight="25" MinWidth="100" IsEnabled="{Binding ElementName=openSocket,Path=Background,Converter={StaticResource enableControlConvert}}"
+                         Text="{Binding targetPort}"/>
+
+                <Grid Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="openSocket" Content="{Binding socketbtntext}" Background="{Binding socketbgcolor}" Foreground="White" Height="31" VerticalAlignment="Top"/>
+                    <Button Grid.Column="2" x:Name="clearSocketDisp" Content="清除显示" Background="DodgerBlue" Foreground="White"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        
+        
+        <TextBox Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" TextWrapping="Wrap" BorderBrush="DodgerBlue" BorderThickness="2" Margin="0,10,0,3"
+                   x:Name="comData_textblock" Text="{Binding DataSerial}" 
+                 ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.PanningMode="Both">
+
+        </TextBox>
+
+        <TextBox Grid.Column="3" Grid.Row="5" Grid.RowSpan="2" TextWrapping="Wrap" BorderBrush="DodgerBlue"  BorderThickness="2" Margin="0,10,0,3"
+                   x:Name="socketData_textblock" Text="{Binding DataSocket}" 
+                 ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.PanningMode="Both">
+
+        </TextBox>
+
+
+    </Grid>
+</Window>
