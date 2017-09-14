@@ -15,6 +15,7 @@ namespace SerialToTCP
     {
         public bool hidenWindow { get; set; }// 开机隐藏界面
         public int delay { get; set; }// 虚拟串口初始化需要时间，本软件启动之前虚拟串口可能未初始化完成，顾增加延时
+        public int cacheSize { get; set; }// 接收发送缓存大小，字符个数
         public NetParams netParams{get;set;}
         public SerialParams serialParams{get;set;}
     }
@@ -53,6 +54,9 @@ namespace SerialToTCP
             // 启动前延时
             this.myGlobalInfo.delay = 0;//s
 
+            // 接收发送缓存大小
+            this.myGlobalInfo.cacheSize = 50000;//字符格式
+
             // 串口参数初始化
             if (null == this.myGlobalInfo.serialParams) { this.myGlobalInfo.serialParams = new SerialParams(); }
             this.myGlobalInfo.serialParams.comNum = null;
@@ -60,7 +64,7 @@ namespace SerialToTCP
             this.myGlobalInfo.serialParams.parity = System.IO.Ports.Parity.None;
             this.myGlobalInfo.serialParams.databits = 8;
             this.myGlobalInfo.serialParams.stopbits = System.IO.Ports.StopBits.One;
-            this.myGlobalInfo.serialParams.autostart = false;
+            this.myGlobalInfo.serialParams.autoStart = false;
 
             //网口参数初始化
             if (null == this.myGlobalInfo.netParams) { this.myGlobalInfo.netParams = new NetParams(); }
@@ -70,7 +74,7 @@ namespace SerialToTCP
             this.myGlobalInfo.netParams.targetPort = 3000;
             this.myGlobalInfo.netParams.localIp = "192.168.3.120";
             this.myGlobalInfo.netParams.localPort = 3100;
-            this.myGlobalInfo.netParams.autostart = false;
+            this.myGlobalInfo.netParams.autoStart = false;
 
         }
 
