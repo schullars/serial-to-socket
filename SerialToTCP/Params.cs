@@ -45,7 +45,7 @@ namespace SerialToTCP
         private string _localIp;
         private int _localPort=3000;
         public UDPType udpType = UDPType.Unicast;// 单播，广播选择
-        public bool autostart;
+        public bool autoStart;
 
 
         public Protocol protocol { get { return _protocol; } set { _protocol = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("protocol")); } }
@@ -73,7 +73,7 @@ namespace SerialToTCP
         private Parity _parity;
         private int _databits;
         private StopBits _stopbits;
-        public bool autostart;
+        public bool autoStart;
 
         public string comNum { get { return _comNum; } set { _comNum = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("comNum")); } }
         public int baud { get { return _baud; } set { _baud = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("baud")); } }
@@ -109,9 +109,41 @@ namespace SerialToTCP
 
         public string DataSocket { get { return _DataSocket; } set { if (null != _DataSocket && Limit < _DataSocket.Length) { _DataSocket = ""; } _DataSocket = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataSocket")); } }
         public string DataSerial { get { return _DataSerial; } set { if (null != _DataSerial && Limit < _DataSerial.Length) { _DataSerial = ""; } _DataSerial = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataSerial")); } }
-        public string DataFromSerial { get { return _DataFromSerial; } set { if (null != _DataFromSerial && Limit < _DataFromSerial.Length) { _DataFromSerial = ""; } _DataFromSerial = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataFromSerial")); } }
-        public string DataFromSocket { get { return _DataFromSocket; } set { if (null != _DataFromSocket && Limit < _DataFromSocket.Length) { _DataFromSocket = ""; } _DataFromSocket = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataFromSocket")); } }
+        public string DataFromSerial
+        {
+            get { return _DataFromSerial; }
+            set
+            {
+                if (null != _DataFromSerial && Limit < _DataFromSerial.Length && null != value && _DataFromSerial.Length < value.Length)
+                {
+                    value = value.Remove(0,_DataFromSerial.Length);// 超过缓存上限则清空之前接收的内容
+                }
+                _DataFromSerial = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataFromSerial"));
+            }
+        }
+        public string DataFromSocket 
+        { 
+            get { return _DataFromSocket; } 
+            set 
+            { 
+                if (null != _DataFromSocket && Limit < _DataFromSocket.Length && null != value && _DataFromSocket.Length < value.Length) 
+                {
+                    value = value.Remove(0, _DataFromSocket.Length); // 超过缓存上限则清空之前接收的内容
+                } 
+                _DataFromSocket = value; 
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("DataFromSocket")); 
+            } 
+        }
 
+
+        public DataTransForm()//构造函数，用于初始化缓存大小
+        {
+            if(null != MySettings.Default && null != MySettings.Default.myGlobalInfo && MySettings.Default.myGlobalInfo.cacheSize >= 0)
+            {
+                this.Limit = MySettings.Default.myGlobalInfo.cacheSize;
+            }
+        }
     }
 
     /// <summary>

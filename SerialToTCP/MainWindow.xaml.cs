@@ -48,8 +48,8 @@ namespace SerialToTCP
             InitComParams();
             InitSocketParams();
 
-            if (MySettings.Default.myGlobalInfo.serialParams.autostart) { this.OpenCloseCom(); }// 是否自动连接
-            if (MySettings.Default.myGlobalInfo.netParams.autostart) { this.OpenCloseSocket(); }
+            if (MySettings.Default.myGlobalInfo.serialParams.autoStart) { this.OpenCloseCom(); }// 是否自动连接
+            if (MySettings.Default.myGlobalInfo.netParams.autoStart) { this.OpenCloseSocket(); }
 
             this.DataContext = this;
 
@@ -440,7 +440,16 @@ namespace SerialToTCP
                 {
                     if (null == mySocket) { sockeRunFlag = false; continue; }// 实例是否为空
 
-                    if (mySocket.IsConnected() != true) { continue; }// socket 是否已连接
+                    if (mySocket.IsConnected() != true) 
+                    {
+                        if (null != MySettings.Default && null != MySettings.Default.myGlobalInfo && 0 == MySettings.Default.myGlobalInfo.cacheSize)// 当缓存设置为0时，不论发送成功与否，都清空缓存
+                        {
+                            dataTransForm.DataFromSerial_Lock.AcquireWriterLock(100);// 100ms超时
+                            dataTransForm.DataFromSerial = "";
+                            dataTransForm.DataFromSerial_Lock.ReleaseLock();
+                        }
+                        continue; 
+                    }// socket 是否已连接
 
                     if (null != dataTransForm && null != dataTransForm.DataFromSerial && 0 < dataTransForm.DataFromSerial.Length)// 发送数据到socket
                     {
@@ -450,7 +459,12 @@ namespace SerialToTCP
 
                             sendCount = mySocket.SocketSendData(dataTransForm.DataFromSerial);
                             dataTransForm.DataSocket += "send to socket:\r\n" + dataTransForm.DataFromSerial.Substring(0, sendCount) + "\r\n";
-                            dataTransForm.DataFromSerial = dataTransForm.DataFromSerial.Remove(0, sendCount);
+
+                            if (null != MySettings.Default && null != MySettings.Default.myGlobalInfo && 0 == MySettings.Default.myGlobalInfo.cacheSize)// 当缓存设置为0时，不论发送成功与否，都清空缓存
+                            {
+                                dataTransForm.DataFromSerial = "";
+                            }
+                            else { dataTransForm.DataFromSerial = dataTransForm.DataFromSerial.Remove(0, sendCount); }                         
 
                             dataTransForm.DataFromSerial_Lock.ReleaseLock();
                         }
@@ -481,7 +495,7 @@ namespace SerialToTCP
                 }
                 catch { }
 
-                Thread.Sleep(100);// 降低cpu占用率
+                Thread.Sleep(50);// 降低cpu占用率
 
             }
 
@@ -512,7 +526,16 @@ namespace SerialToTCP
                 {
                     if (null == mySerialPort) { serialRunFlag = false; continue; }// 实例不能为空
 
-                    if (!mySerialPort.IsOpen) { continue; }// 串口必须打开
+                    if (!mySerialPort.IsOpen) 
+                    {
+                        if (null != MySettings.Default && null != MySettings.Default.myGlobalInfo && 0 == MySettings.Default.myGlobalInfo.cacheSize)// 当缓存设置为0时，不论发送成功与否，都清空缓存
+                        {
+                            dataTransForm.DataFromSocket_Lock.AcquireWriterLock(100);// 100ms超时
+                            dataTransForm._DataFromSocket = "";
+                            dataTransForm.DataFromSocket_Lock.ReleaseLock();
+                        }
+                        continue; 
+                    }// 串口必须打开
 
                     if (null != dataTransForm && null != dataTransForm.DataFromSerial)// 从串口接收数据
                     {
@@ -543,8 +566,13 @@ namespace SerialToTCP
 
                             sendCount = this.SendSerialData(dataTransForm.DataFromSocket);
                             dataTransForm.DataSerial += "send to serial:\r\n" + dataTransForm._DataFromSocket.Substring(0, sendCount) + "\r\n";
-                            dataTransForm.DataFromSocket = dataTransForm.DataFromSocket.Remove(0, sendCount);
 
+                            if (null != MySettings.Default && null != MySettings.Default.myGlobalInfo && 0 == MySettings.Default.myGlobalInfo.cacheSize)// 当缓存设置为0时，不论发送成功与否，都清空缓存
+                            {
+                                dataTransForm.DataFromSocket = "";
+                            }
+                            else { dataTransForm.DataFromSocket = dataTransForm.DataFromSocket.Remove(0, sendCount); }
+                            
                             dataTransForm.DataFromSocket_Lock.ReleaseLock();
                         }
                         catch { }// 获取锁失败
